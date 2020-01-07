@@ -23,7 +23,7 @@ func TestHA1(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		crdls := credentials{username: c.username, realm: c.realm, password: c.password}
+		crdls := Credentials{username: c.username, realm: c.realm, password: c.password}
 
 		got := crdls.ha1()
 
@@ -53,7 +53,7 @@ func TestHA2(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		crdls := credentials{method: c.method, digestURI: c.digestURI}
+		crdls := Credentials{method: c.method, digestURI: c.digestURI}
 
 		got := crdls.ha2()
 
@@ -81,7 +81,7 @@ func TestNonceCountStringConversion(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		crdls := credentials{nonceCount: c.count}
+		crdls := Credentials{nonceCount: c.count}
 
 		got := crdls.nonceCountStr()
 
@@ -94,11 +94,11 @@ func TestNonceCountStringConversion(t *testing.T) {
 
 func TestResponseCalculation(t *testing.T) {
 	cases := []struct {
-		credentials *credentials
+		credentials *Credentials
 		want        string
 	}{
 		{
-			&credentials{
+			&Credentials{
 				"acs",
 				"acs",
 				"HuaweiHomeGateway",
@@ -116,7 +116,7 @@ func TestResponseCalculation(t *testing.T) {
 		},
 
 		{
-			&credentials{
+			&Credentials{
 				"Mufasa",
 				"Circle Of Life",
 				"testrealm@host.com",
@@ -134,7 +134,7 @@ func TestResponseCalculation(t *testing.T) {
 		},
 
 		{
-			&credentials{
+			&Credentials{
 				"Mufasa",
 				"Circle Of Life",
 				"testrealm@host.com",
@@ -164,11 +164,11 @@ func TestResponseCalculation(t *testing.T) {
 
 func TestAuthHeader(t *testing.T) {
 	cases := []struct {
-		credentials *credentials
+		credentials *Credentials
 		want        string
 	}{
 		{
-			&credentials{
+			&Credentials{
 				"acs",
 				"acs",
 				"HuaweiHomeGateway",
@@ -186,7 +186,7 @@ func TestAuthHeader(t *testing.T) {
 		},
 
 		{
-			&credentials{
+			&Credentials{
 				"Mufasa",
 				"Circle Of Life",
 				"testrealm@host.com",
@@ -204,7 +204,7 @@ func TestAuthHeader(t *testing.T) {
 		},
 
 		{
-			&credentials{
+			&Credentials{
 				"Mufasa",
 				"Circle Of Life",
 				"testrealm@host.com",
@@ -223,7 +223,7 @@ func TestAuthHeader(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got := c.credentials.authHeader()
+		got := c.credentials.AuthHeader()
 
 		if got != c.want {
 			t.Errorf("expected %v", c.want)

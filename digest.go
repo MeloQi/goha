@@ -11,7 +11,7 @@ import (
 
 // credentials represents the necessary data that will be used to generate
 // the digest Authorization header
-type credentials struct {
+type Credentials struct {
 	username   string
 	password   string
 	realm      string
@@ -27,7 +27,7 @@ type credentials struct {
 
 // newCredentials creates and initializes a new credentials. It uses
 // WWW-Authenticate header received from server to parse the challenge.
-func newCredentials(username, password, header, uri, method string) *credentials {
+func NewCredentials(username, password, header, uri, method string) *Credentials {
 	d := newDigestHeader(header)
 
 	realm := d.realm()
@@ -37,12 +37,12 @@ func newCredentials(username, password, header, uri, method string) *credentials
 	qop := d.qop()
 	cnonce := randomNonce() // random generated client nonce
 
-	return &credentials{username, password, realm, nonce, uri, algorithm, cnonce, opaque, qop, 0, method}
+	return &Credentials{username, password, realm, nonce, uri, algorithm, cnonce, opaque, qop, 0, method}
 }
 
 // authHeader returns the value that will be applied to the Authorization header.
 // With this header the http client authorizes the request.
-func (c *credentials) authHeader() string {
+func (c *Credentials) AuthHeader() string {
 	var sl []string
 
 	sl = append(sl, `username="`+c.username+`"`)
@@ -70,7 +70,7 @@ func (c *credentials) authHeader() string {
 
 // response calculates the digest response that will be embedded in the Authorization header.
 // If the qop is not specified it applies the scheme described in RFC 2069.
-func (c *credentials) response() string {
+func (c *Credentials) response() string {
 	c.nonceCount++
 
 	if c.qop == "" {
@@ -80,15 +80,15 @@ func (c *credentials) response() string {
 	return h(c.ha1(), c.nonce, c.nonceCountStr(), c.cnonce, c.qop, c.ha2())
 }
 
-func (c *credentials) nonceCountStr() string {
+func (c *Credentials) nonceCountStr() string {
 	return fmt.Sprintf("%08x", c.nonceCount)
 }
 
-func (c *credentials) ha1() string {
+func (c *Credentials) ha1() string {
 	return h(c.username, c.realm, c.password)
 }
 
-func (c *credentials) ha2() string {
+func (c *Credentials) ha2() string {
 	return h(c.method, c.digestURI)
 }
 

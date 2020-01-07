@@ -91,8 +91,8 @@ func (t *transportStruct) RoundTrip(req *http.Request) (*http.Response, error) {
 
 	if strings.HasPrefix(header, "Digest ") {
 		// We should use Digest scheme to authorize the request
-		c := newCredentials(t.username, t.password, header, creq.URL.RequestURI(), creq.Method)
-		creq.Header.Set("Authorization", c.authHeader())
+		c := NewCredentials(t.username, t.password, header, creq.URL.RequestURI(), creq.Method)
+		creq.Header.Set("Authorization", c.AuthHeader())
 	} else if strings.HasPrefix(header, "Basic ") {
 		// We should use Basic scheme to authorize the request
 		creq.SetBasicAuth(t.username, t.password)
