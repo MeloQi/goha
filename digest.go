@@ -156,5 +156,17 @@ func parseDirective(header, name string) string {
 	start := 1 + index + strings.Index(header[index:], `"`)
 	end := start + strings.Index(header[start:], `"`)
 
+	if start >= len(header) || end > len(header) || start >= end {
+		kvs := strings.Split(header[index:], ",")
+		if len(kvs) < 1 {
+			return ""
+		}
+		kv := strings.Split(kvs[0], "=")
+		if len(kv) != 2 {
+			return ""
+		}
+		return strings.Trim(strings.TrimSpace(kv[1]), `"`)
+	}
+
 	return strings.TrimSpace(header[start:end])
 }
